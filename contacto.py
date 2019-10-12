@@ -6,7 +6,7 @@ ultimo_id=1
 class Contacto:
     '''Contiene una lista de clientes self.clientes, permite agregar o quitar'''
     def __init__(self,nombre,apellido,domicilio,telefono,mail):
-        '''crea un objeto contacto '''
+        '''crea un objeto contacto con todos los datos del contacto'''
         
         
         self.nombre=nombre
