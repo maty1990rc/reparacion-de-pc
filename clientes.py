@@ -37,6 +37,15 @@ class Clientes:
             if str(cliente.nombre)== str(filtro):
                 lista.append(cliente)
         return lista
-    
+    def modificar_cliente(self, id, nombre, apellido, domicilio, telefono, mail):
+        cliente=self.buscar_cliente_por_id(id)
+        if cliente:
+            cliente.nombre=nombre
+            cliente.apellido=apellido
+            cliente.domicilio=domicilio
+            cliente.telefono=telefono
+            cliente.mail=mail
+            return cliente
+
 
     
