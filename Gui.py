@@ -135,3 +135,90 @@ class Gui:
 
 
 
+    def insertar_cliente(self):
+        '''ventana para seleccionar el cliente del nuevo pedido'''
+        self.raiz_ac = tkinter.Toplevel()
+        self.raiz_ac.title("Insertar Cliente")
+
+        botonAgregar_cliente=tkinter.Button(self.raiz_ac,text="Nuevo cliente",
+                    command = self.insertrar_nuevo_cliente).grid(row=0, column=0)
+        botonInsertar_cliente=tkinter.Button(self.raiz_ac,text="Cargar cliente",
+                    command = self.insertar_cliente_pedido).grid(row=0, column=3)
+       
+        tkinter.Label(self.raiz_ac,text="Buscar cliente").grid(row=1,column=0)
+        self.cajaBuscar = tkinter.Entry(self.raiz_ac)
+        self.cajaBuscar.grid(row=1, column=1)
+        botonBuscar = tkinter.Button(self.raiz_ac, text="Buscar",
+                    command = self.buscar_en_insert).grid(row=1, column=2)
+
+        self.treeview2 = ttk.Treeview(self.raiz_ac, 
+                    columns=("nombre","apellido","domicilio","telefono","mail"))
+        self.treeview2.heading("#0",text="id")
+        self.treeview2.column("#0",minwidth=0, width=40)
+        self.treeview2.heading("nombre",text="Nombre")
+        self.treeview2.heading("apellido",text="Apellido")
+        self.treeview2.heading("domicilio",text="Domicilio")
+        self.treeview2.heading("telefono",text="Telefono")
+        self.treeview2.heading("mail",text="E-Mail")
+        self.treeview2.grid(row=2, columnspan=6)
+        botonSalir = tkinter.Button(self.raiz_ac, text = "Salir",
+                    command = self.raiz_ac.destroy)
+        botonSalir.grid(row=3, column=1)
+
+
+
+        self.raiz_ac.grab_set()
+        self.raiz_nuevopedido.wait_window(self.raiz_ac)
+        pass
+
+    def insertar_nuevo_cliente(self):
+        '''permite ingresar un nuevo cliente en la etapa de seleccionar cliente del pedido'''
+        self.raiz_insertrar_nuevo_cliente=tkinter.Toplevel()
+        self.raiz_insertrar_nuevo_cliente.title("Nuevo cliente")
+        self.raiz_insertrar_nuevo_cliente.geometry("400x250+0+0")
+        
+        self.caja_nombre=tkinter.Entry(self.raiz_insertrar_nuevo_cliente)
+        self.caja_nombre.grid(row=0,column=1)
+        self.caja_apellido=tkinter.Entry(self.raiz_insertrar_nuevo_cliente)
+        self.caja_apellido.grid(row=1,column=1)
+        self.caja_domicilio=tkinter.Entry(self.raiz_insertrar_nuevo_cliente)
+        self.caja_domicilio.grid(row=2,column=1)
+        self.caja_telefono=tkinter.Entry(self.raiz_insertrar_nuevo_cliente)
+        self.caja_telefono.grid(row=3,column=1)
+        self.caja_mail=tkinter.Entry(self.raiz_insertrar_nuevo_cliente)
+        self.caja_mail.grid(row=4,column=1)
+
+        
+
+        tkinter.Label(self.raiz_insertrar_nuevo_cliente,text="Nombre").grid(row=0,column=0)
+        tkinter.Label(self.raiz_insertrar_nuevo_cliente,text="Apellido").grid(row=1,column=0)
+        tkinter.Label(self.raiz_insertrar_nuevo_cliente,text="domicilio").grid(row=2,column=0)
+        tkinter.Label(self.raiz_insertrar_nuevo_cliente,text="Telefono").grid(row=3,column=0)
+        tkinter.Label(self.raiz_insertrar_nuevo_cliente,text="E-mail").grid(row=4,column=0)
+
+        boton_guardar=tkinter.Button(self.raiz_insertrar_nuevo_cliente,text="Guardar",
+                    command = self.guardar_nuevocliente_insertado).grid(row=5, column=0)
+        boton_salir=tkinter.Button(self.raiz_insertrar_nuevo_cliente,text="salir",
+                    command = self.raiz_insertrar_nuevo_cliente.destroy).grid(row=5, column=1)
+
+        
+
+        self.raiz_insertrar_nuevo_cliente.grab_set()
+        self.raiz_ac.wait_window(self.raiz_insertrar_nuevo_cliente)
+
+
+        
+    def guardar_nuevocliente_insertado(self):
+        ''' guarda los datos del nuevo cliente'''
+        
+        clt= self.clientes.agregar_cliente(self.caja_nombre.get(), self.caja_apellido.get(), self.caja_domicilio.get(), self.caja_telefono.get(), self.caja_mail.get())
+        self.raiz_insertrar_nuevo_cliente.destroy()
+
+
+         # Vaciar el treeview
+        for i in self.treeview2.get_children():
+            self.treeview2.delete(i)
+            
+        self.treeview2.insert("",tkinter.END, text=clt.id,
+                values=(clt.nombre, clt.apellido, clt.domicilio, clt.telefono, clt.mail ))
+
