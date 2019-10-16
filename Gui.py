@@ -141,7 +141,7 @@ class Gui:
         self.raiz_ac.title("Insertar Cliente")
 
         botonAgregar_cliente=tkinter.Button(self.raiz_ac,text="Nuevo cliente",
-                    command = self.insertrar_nuevo_cliente).grid(row=0, column=0)
+                    command = self.insertar_nuevo_cliente).grid(row=0, column=0)
         botonInsertar_cliente=tkinter.Button(self.raiz_ac,text="Cargar cliente",
                     command = self.insertar_cliente_pedido).grid(row=0, column=3)
        
