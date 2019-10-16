@@ -221,4 +221,257 @@ class Gui:
             
         self.treeview2.insert("",tkinter.END, text=clt.id,
                 values=(clt.nombre, clt.apellido, clt.domicilio, clt.telefono, clt.mail ))
+    def insertar_cliente_pedido(self):
+        '''carga los datos del cliente en el pedido mediante el id'''
+        i = self.treeview2.selection()
+        print(i)
+        id = self.treeview2.item(i)['text']
+        self.caja_idcliente.insert(0,id)
+        self.raiz_ac.destroy()
+
+    def buscar_en_insert(self):
+        '''permite buscar clientes en la  seccion nuevo pedido-clientes'''
+        resultado=self.clientes.buscar_cliente(self.cajaBuscar.get())
+
+        if resultado:
+             # Vaciar el treeview
+            for i in self.treeview2.get_children():
+                self.treeview2.delete(i)
+
+            for cliente in resultado:
+                 self.treeview2.insert("",tkinter.END, text=cliente.id,
+                                      values=(cliente.nombre, cliente.apellido, cliente.domicilio, cliente.telefono, cliente.mail))       
+        else:
+            # Vaciar el treeview
+            for i in self.treeview2.get_children():
+                self.treeview2.delete(i)
+            for cliente in self.clientes.clientes:
+                 self.treeview2.insert("",tkinter.END, text=cliente.id,
+                                      values=(cliente.nombre, cliente.apellido, cliente.domicilio, cliente.telefono, cliente.mail))
+
+    
+    def contactos(self):
+        '''interface de adminstracion de clientes, permite agregar, eliminar,modificar,buscar'''
+
+        self.raiz = tkinter.Toplevel()
+        self.raiz.title("Clientes")
+
+        botonAgregar_cliente=tkinter.Button(self.raiz,text="Nuevo cliente",
+                    command = self.agregar_cliente).grid(row=0, column=0)
+        botonModificar_cliente=tkinter.Button(self.raiz,text="Modificar cliente",
+                    command = self.modificar_cliente).grid(row=0, column=1)
+        botonEliminar=tkinter.Button(self.raiz,text="Eliminar",
+                    command = self.eliminar_cliente).grid(row=0, column=2)
+        tkinter.Label(self.raiz,text="Buscar cliente").grid(row=1,column=0)
+        self.cajaBuscar = tkinter.Entry(self.raiz)
+        self.cajaBuscar.grid(row=1, column=1)
+        botonBuscar = tkinter.Button(self.raiz, text="Buscar",
+                    command = self.buscar_cliente).grid(row=1, column=2)
+
+        self.treeview3 = ttk.Treeview(self.raiz, 
+                    columns=("nombre","apellido","domicilio","telefono","mail"))
+        self.treeview3.heading("#0",text="id")
+        self.treeview3.column("#0",minwidth=0, width=40)
+        self.treeview3.heading("nombre",text="Nombre")
+        self.treeview3.heading("apellido",text="Apellido")
+        self.treeview3.heading("domicilio",text="Domicilio")
+        self.treeview3.heading("telefono",text="Telefono")
+        self.treeview3.heading("mail",text="E-Mail")
+        self.treeview3.grid(row=2, columnspan=6)
+        botonSalir = tkinter.Button(self.raiz, text = "Salir",
+                    command = self.raiz.destroy)
+        botonSalir.grid(row=3, column=1)
+
+
+
+        self.raiz.grab_set()
+        self.raiz_sistema.wait_window(self.raiz)
+        pass
+    def modificar_cliente(self):
+        '''permite modificar los datos del cliente seleccionado en el treeview'''
+        i = self.treeview3.selection()
+        id = self.treeview3.item(i)['text']
+
+        cliente=self.clientes.buscar_cliente_por_id(id)
+
+        if cliente:
+            self.dialogo_modificar=tkinter.Toplevel()
+            self.dialogo_modificar.title("Modificar")
+
+            self.caja_nombre=tkinter.Entry(self.dialogo_modificar)
+            self.caja_nombre.grid(row=0,column=1)
+            self.caja_nombre.insert(0,cliente.nombre)
+            self.caja_apellido=tkinter.Entry(self.dialogo_modificar)
+            self.caja_apellido.grid(row=1,column=1)
+            self.caja_apellido.insert(0,cliente.apellido)
+            self.caja_domicilio=tkinter.Entry(self.dialogo_modificar)
+            self.caja_domicilio.grid(row=2,column=1)
+            self.caja_domicilio.insert(0,cliente.domicilio)
+            self.caja_telefono=tkinter.Entry(self.dialogo_modificar)
+            self.caja_telefono.grid(row=3,column=1)
+            self.caja_telefono.insert(0,cliente.telefono)
+            self.caja_mail=tkinter.Entry(self.dialogo_modificar)
+            self.caja_mail.grid(row=4,column=1)
+            self.caja_mail.insert(0,cliente.mail)
+
+            tkinter.Label(self.dialogo_modificar,text="Nombre").grid(row=0,column=0)
+            tkinter.Label(self.dialogo_modificar,text="Apellido").grid(row=1,column=0)
+            tkinter.Label(self.dialogo_modificar,text="domicilio").grid(row=2,column=0)
+            tkinter.Label(self.dialogo_modificar,text="Telefono").grid(row=3,column=0)
+            tkinter.Label(self.dialogo_modificar,text="E-mail").grid(row=4,column=0)
+
+            boton_guardar=tkinter.Button(self.dialogo_modificar,text="Guardar",
+                        command = self.modificar_ok).grid(row=5, column=0)
+            boton_salir=tkinter.Button(self.dialogo_modificar,text="salir",
+                        command = self.dialogo_modificar.destroy).grid(row=5, column=1)
+
+            
+
+            self.dialogo_modificar.grab_set()
+            self.raiz.wait_window(self.dialogo_modificar)
+        
+        
+
+            
+        
+        pass
+    def modificar_ok(self):
+        '''guarda las modificaciones hechas en el cliente'''
+        i = self.treeview3.selection()
+        id = self.treeview3.item(i)['text']
+        
+        clt=self.clientes.modificar_cliente(id, self.caja_nombre.get(), self.caja_apellido.get(), self.caja_domicilio.get(), self.caja_telefono.get(), self.caja_mail.get())
+            
+
+         # Vaciar el treeview
+        for i in self.treeview3.get_children():
+            self.treeview3.delete(i)
+            
+        self.treeview3.insert("",tkinter.END, text=clt.id,
+                values=(clt.nombre, clt.apellido, clt.domicilio, clt.telefono, clt.mail ))
+        self.dialogo_modificar.destroy()
+
+    def eliminar_cliente(self):
+        '''elimiena cliente seleccionado'''
+        
+        i = self.treeview3.selection()
+        id = self.treeview3.item(i)['text']
+
+        a=self.clientes.eliminar_cliente(id)
+
+         # Vaciar el treeview
+        for i in self.treeview3.get_children():
+            self.treeview3.delete(i)
+            
+        messagebox.showwarning("ADMINISTRADOR DE CLIENTES","CLIENTE ELIMINADO")    
+   
+        pass
+    def buscar_cliente(self):
+        '''permite buscar cliente utilizando un filtro'''
+        resultado=self.clientes.buscar_cliente(self.cajaBuscar.get())
+
+        if resultado:
+             # Vaciar el treeview
+            for i in self.treeview3.get_children():
+                self.treeview3.delete(i)
+
+            for cliente in resultado:
+                 self.treeview3.insert("",tkinter.END, text=cliente.id,
+                                      values=(cliente.nombre, cliente.apellido, cliente.domicilio, cliente.telefono, cliente.mail))       
+        else:
+            # Vaciar el treeview
+            for i in self.treeview3.get_children():
+                self.treeview3.delete(i)
+            for cliente in self.clientes.clientes:
+                 self.treeview3.insert("",tkinter.END, text=cliente.id,
+                                      values=(cliente.nombre, cliente.apellido, cliente.domicilio, cliente.telefono, cliente.mail)) 
+
+ 
+    
+    def agregar_cliente(self):
+        '''formulario de ingreso de datos de cliente'''
+        self.raiz_agregar=tkinter.Toplevel()
+        self.raiz_agregar.title("Nuevo cliente")
+        self.raiz_agregar.geometry("400x250+0+0")
+        
+        self.caja_nombre=tkinter.Entry(self.raiz_agregar)
+        self.caja_nombre.grid(row=0,column=1)
+        self.caja_apellido=tkinter.Entry(self.raiz_agregar)
+        self.caja_apellido.grid(row=1,column=1)
+        self.caja_domicilio=tkinter.Entry(self.raiz_agregar)
+        self.caja_domicilio.grid(row=2,column=1)
+        self.caja_telefono=tkinter.Entry(self.raiz_agregar)
+        self.caja_telefono.grid(row=3,column=1)
+        self.caja_mail=tkinter.Entry(self.raiz_agregar)
+        self.caja_mail.grid(row=4,column=1)
+
+        
+
+        tkinter.Label(self.raiz_agregar,text="Nombre").grid(row=0,column=0)
+        tkinter.Label(self.raiz_agregar,text="Apellido").grid(row=1,column=0)
+        tkinter.Label(self.raiz_agregar,text="domicilio").grid(row=2,column=0)
+        tkinter.Label(self.raiz_agregar,text="Telefono").grid(row=3,column=0)
+        tkinter.Label(self.raiz_agregar,text="E-mail").grid(row=4,column=0)
+
+        boton_guardar=tkinter.Button(self.raiz_agregar,text="Guardar",
+                    command = self.nuevo_cliente).grid(row=5, column=0)
+        boton_salir=tkinter.Button(self.raiz_agregar,text="salir",
+                    command = self.raiz_agregar.destroy).grid(row=5, column=1)
+
+        
+
+        self.raiz_agregar.grab_set()
+        self.raiz.wait_window(self.raiz_agregar)
+        
+        pass
+    def nuevo_cliente(self):
+        '''guarda los datos del nuevo cliente'''
+        clt= self.clientes.agregar_cliente(self.caja_nombre.get(), self.caja_apellido.get(), self.caja_domicilio.get(), self.caja_telefono.get(), self.caja_mail.get())
+        self.raiz_agregar.destroy()
+
+
+         # Vaciar el treeview
+        for i in self.treeview3.get_children():
+            self.treeview3.delete(i)
+            
+        self.treeview3.insert("",tkinter.END, text=clt.id,
+                values=(clt.nombre, clt.apellido, clt.domicilio, clt.telefono, clt.mail ))
+        
+        pass
+    def pedidos_proximos(self):
+        listado=[]
+        for x in self.pedidos.pedidos:
+            listado.append(x)
+            print(x.descripcion)
+        lista=self.estados.pedidos_por_vencer(listado)
+
+        # Vaciar el treeview
+        for i in self.treeview.get_children():
+            self.treeview.delete(i)
+        for clt in lista:
+            self.treeview.insert("",tkinter.END, text=clt.id_pedido,
+                    values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado ))
+            
+
+    def vencidos(self):
+        listado=[]
+        for x in self.pedidos.pedidos:
+            listado.append(x)
+            print(x.descripcion)
+        lista=self.estados.pedidos_vencidos(listado) 
+
+        # Vaciar el treeview
+        for i in self.treeview.get_children():
+            self.treeview.delete(i)
+        for clt in lista:
+            self.treeview.insert("",tkinter.END, text=clt.id_pedido,
+                    values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado ))
+
+
+            
+if __name__ == "__main__":
+    g = Gui()
+      
+
+
 
