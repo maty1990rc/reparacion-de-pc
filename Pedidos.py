@@ -27,7 +27,25 @@ class Pedidos:
         for pedido in self.pedidos:
             if str(pedido.id_pedido)==str(id_pedido):
                 return pedido
-    def entregar_pedidos(self,id_pedido):
-        obj=buscar_por_id(self,id_pedido)
-        obj.fecha_entrega = date.today()
-        obj.estado_id = 25 #(aca iria el numero de estado que corresponda a entregado)
+     def entregar_pedido(self,id_pedido):
+        pedido=self.buscar_por_id(id_pedido)
+        if pedido:
+            pedido.id_estado= 'Entregado'
+            pedido.fecha_entrega=datetime.today()
+            return pedido
+        else:
+            return 'Nose encontro pedido'
+    def modificar_pedido(self,id_pedido, descripcion=' ', precio=' ',etiquetas='', pagado=''):
+        pedido=self.buscar_por_id(id_pedido)
+            
+        if pedido:
+            if descripcion:
+                pedido.descripcion=descripcion
+            if precio:
+                pedido.precio=precio
+            if etiquetas:
+                pedido.etiquetas=etiquetas
+            if pagado:
+                pedido.pagado=pagado
+        else:
+            return 'pedido no encontrado'
