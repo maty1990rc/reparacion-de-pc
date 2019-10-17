@@ -30,4 +30,4 @@ class Pedidos:
     def entregar_pedidos(self,id_pedido):
         obj=buscar_por_id(self,id_pedido)
         obj.fecha_entrega = date.today()
-        obj.estado_id = 25 (aca iria el numero de estado que corresponda a entregado)
+        obj.estado_id = 25 #(aca iria el numero de estado que corresponda a entregado)
