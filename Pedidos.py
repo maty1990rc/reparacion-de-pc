@@ -3,17 +3,18 @@ from datetime import datetime
 from contacto import Contacto
 from clientes import Clientes
 from pedido import Pedido
+from estados import Estados
 
 class Pedidos:
     ''' Almacena cada pedido de trabajo'''
 
     def __init__(self): 
         self.pedidos=[]
-
-    def nuevo_pedido(self, id_cliente, descripcion, etiquetas=' ', fecha_prev=' ', fecha_entrega=' ',
-                 id_estado=' ',precio=' ',pagado=' '):    
-        obj=Pedido(id_cliente, descripcion, etiquetas, fecha_prev, fecha_entrega,
-                 id_estado,precio,pagado)
+        self.estados=()
+    def nuevo_pedido(self, id_cliente, descripcion, etiquetas=' ', fecha_prev=' ',
+                 precio=' ',pagado=' '):    
+        obj=Pedido(id_cliente, descripcion, etiquetas, fecha_prev,precio,pagado)
+        
         self.pedidos.append(obj)
         return obj
     def buscar_pedido(self,filtro):
@@ -27,7 +28,7 @@ class Pedidos:
         for pedido in self.pedidos:
             if str(pedido.id_pedido)==str(id_pedido):
                 return pedido
-     def entregar_pedido(self,id_pedido):
+    def entregar_pedido(self,id_pedido):
         pedido=self.buscar_por_id(id_pedido)
         if pedido:
             pedido.id_estado= 'Entregado'
