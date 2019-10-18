@@ -1,9 +1,7 @@
 #! /usr/bin/env python3
 from datetime import datetime,timedelta
-from contacto import Contacto
-from clientes import Clientes
-from pedido import Pedido
-from Pedidos import Pedidos
+
+
 class Estados():
     def __init__(self):
         self.estados=["Recibido","Presupuestado","Reparado","Entregado","Demorado"]
@@ -47,7 +45,12 @@ class Estados():
                 pedidos.remove(xx)
             return lista    
                 
-                
+    def pegar_estado(self,pedido):
+        if pedido:
+            pedido.id_estado=self.pedidos[0]
+        if pedido.precio > 0:
+            pedido.id_estado=self.pedidos[1]
+        return pedido
         
         
                 #for x in self.contactos:
