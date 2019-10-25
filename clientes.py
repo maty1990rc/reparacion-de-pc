@@ -24,9 +24,10 @@ class Clientes:
         return cliente
 
     def eliminar_cliente(self,id_cliente):
-        cliente= self.buscar_cliente(id_cliente)
+        cliente= self.buscar_cliente_por_id(id_cliente)
         if cliente :
             self.clientes.remove(cliente)
+            self.repositorio.eliminar(cliente)
                 
         else:
             return "cliente no encontrado"
