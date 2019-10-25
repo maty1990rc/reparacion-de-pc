@@ -60,3 +60,4 @@ class Repositorio:
         except:
             print("Error al conectarse")
             raise Exception("Conexión errónea")
+
