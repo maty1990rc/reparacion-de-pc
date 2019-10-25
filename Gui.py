@@ -7,7 +7,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from Pedidos import Pedidos
 from pedido import Pedido
-from estados import Estados
+
 
 class Gui:
     '''interface grafica del sistema'''
@@ -19,7 +19,7 @@ class Gui:
         self.raiz_sistema.title("Reparacion de PC")
         self.clientes=Clientes()
         self.pedidos=Pedidos()
-        self.estados=Estados()
+        
 
         botonAgregar_pedido=tkinter.Button(self.raiz_sistema,text="Ingresar pedido",
                     command = self.agregar_pedido).grid(row=0, column=0)
@@ -37,24 +37,31 @@ class Gui:
         self.cajaBuscar_pedido.grid(row=1, column=1)
         botonBuscar_pedido = tkinter.Button(self.raiz_sistema, text="Buscar",
                     command = self.buscar_pedido).grid(row=1, column=2)
-
         botonModificar_pedido = tkinter.Button(self.raiz_sistema, text="Modificar",
                     command = self.modificar_pedido).grid(row=0, column=2)
+
         
         self.treeview = ttk.Treeview(self.raiz_sistema, 
-                    columns=("descripcion","etiquetas","fecha_prev","precio","pagado"))
+                    columns=("descripcion","etiquetas","fecha_prev","precio","pagado","estado"))
         self.treeview.heading("#0",text="id")
         self.treeview.column("#0",minwidth=0, width=40)
         self.treeview.heading("descripcion",text="Descripcion")
         self.treeview.heading("etiquetas",text="Etiquetas")
         self.treeview.heading("fecha_prev",text="Fecha Prevista")
         self.treeview.heading("precio",text="Precio")
-        self.treeview.heading("pagado",text="Estada de pago")
+        self.treeview.heading("pagado",text="Pagado")
+        self.treeview.heading("estado",text="Estado")
+        
         self.treeview.grid(row=2, columnspan=6)
         botonSalir = tkinter.Button(self.raiz_sistema, text = "Salir",
                     command = self.raiz_sistema.destroy)
         botonSalir.grid(row=3, column=1)
-        
+
+
+
+
+
+
     def agregar_pedido(self):
         '''ventana para ingresar datos de pedido'''
         self.raiz_nuevopedido=tkinter.Toplevel()
@@ -79,7 +86,7 @@ class Gui:
         tkinter.Label(self.raiz_nuevopedido,text="Fecha previstas").grid(row=2,column=0)
         tkinter.Label(self.raiz_nuevopedido,text="Precio").grid(row=3,column=0)
         tkinter.Label(self.raiz_nuevopedido,text="Pagado").grid(row=4,column=0)
-        tkinter.Label(self.raiz_nuevopedido,text="id cliente").grid(row=6,column=0)
+
         boton_salir=tkinter.Button(self.raiz_nuevopedido,text="Salir",
                                    command= self.raiz_nuevopedido.destroy).grid(row=5,column=1)
         boton_guardar=tkinter.Button(self.raiz_nuevopedido,text="Guardar",
@@ -106,7 +113,7 @@ class Gui:
             self.treeview.delete(i)
             
         self.treeview.insert("",tkinter.END, text=clt.id_pedido,
-                values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.id_estado, clt.pagado ))
+                values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado, clt.id_estado ))
         
 
 
@@ -120,7 +127,7 @@ class Gui:
             self.treeview.delete(i)
         for clt in resultado:    
             self.treeview.insert("",tkinter.END, text=clt.id_pedido,
-                    values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.id_estado, clt.pagado ))
+                    values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado, clt.id_estado  ))
         
             
 
@@ -133,9 +140,7 @@ class Gui:
         
 
         self.treeview.insert("",tkinter.END, text=clt.id_pedido,
-                values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado ))
-
-
+                values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado, clt.id_estado  ))    
 
 
     def insertar_cliente(self):
@@ -144,7 +149,7 @@ class Gui:
         self.raiz_ac.title("Insertar Cliente")
 
         botonAgregar_cliente=tkinter.Button(self.raiz_ac,text="Nuevo cliente",
-                    command = self.insertar_nuevo_cliente).grid(row=0, column=0)
+                    command = self.insertrar_nuevo_cliente).grid(row=0, column=0)
         botonInsertar_cliente=tkinter.Button(self.raiz_ac,text="Cargar cliente",
                     command = self.insertar_cliente_pedido).grid(row=0, column=3)
        
@@ -174,7 +179,7 @@ class Gui:
         self.raiz_nuevopedido.wait_window(self.raiz_ac)
         pass
 
-    def insertar_nuevo_cliente(self):
+    def insertrar_nuevo_cliente(self):
         '''permite ingresar un nuevo cliente en la etapa de seleccionar cliente del pedido'''
         self.raiz_insertrar_nuevo_cliente=tkinter.Toplevel()
         self.raiz_insertrar_nuevo_cliente.title("Nuevo cliente")
@@ -224,6 +229,8 @@ class Gui:
             
         self.treeview2.insert("",tkinter.END, text=clt.id,
                 values=(clt.nombre, clt.apellido, clt.domicilio, clt.telefono, clt.mail ))
+
+
     def insertar_cliente_pedido(self):
         '''carga los datos del cliente en el pedido mediante el id'''
         i = self.treeview2.selection()
@@ -294,6 +301,7 @@ class Gui:
         '''permite modificar los datos del cliente seleccionado en el treeview'''
         i = self.treeview3.selection()
         id = self.treeview3.item(i)['text']
+        print(id)
 
         cliente=self.clientes.buscar_cliente_por_id(id)
 
@@ -442,11 +450,7 @@ class Gui:
         
         pass
     def pedidos_proximos(self):
-        listado=[]
-        for x in self.pedidos.pedidos:
-            listado.append(x)
-            print(x.descripcion)
-        lista=self.estados.pedidos_por_vencer(listado)
+        lista=self.pedidos.pedidos_por_vencer()
 
         # Vaciar el treeview
         for i in self.treeview.get_children():
@@ -457,11 +461,8 @@ class Gui:
             
 
     def vencidos(self):
-        listado=[]
-        for x in self.pedidos.pedidos:
-            listado.append(x)
-            print(x.descripcion)
-        lista=self.estados.pedidos_vencidos(listado) 
+        
+        lista=self.pedidos.pedidos_vencidos() 
 
         # Vaciar el treeview
         for i in self.treeview.get_children():
@@ -512,17 +513,22 @@ class Gui:
             self.raiz_sistema.wait_window(self.root_modificar_pedido)
         
     def modificar_pedido_ok(self):
-        clt=self.pedidos.modificar_pedido(self.caja_descripcion.get(),self.caja_precio.get(),self.caja_etiquetas.get(),self.caja_pagado.get())
-        # Vaciar el treeview
+        i = self.treeview.selection()
+        id = self.treeview.item(i)['text']
+        print(id)
+
+        clt=self.pedidos.modificar_pedido(id,self.caja_descripcion.get(),self.caja_precio.get(),self.caja_etiquetas.get(),self.caja_pagado.get())
+
+         # Vaciar el treeview
         for i in self.treeview.get_children():
             self.treeview.delete(i)
-
-        self.treeview.insert("",tkinter.END, text=clt.id_pedido,
-                    values=(clt.descripcion, clt.etiquetas, clt.fecha_prev, clt.precio, clt.pagado ))
+    
+        self.root_modificar_pedido.destroy()
+        
+       
+       
             
 if __name__ == "__main__":
     g = Gui()
       
-
-
 

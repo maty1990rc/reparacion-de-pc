@@ -7,13 +7,13 @@ from clientes import Clientes
 ultimoid=0
 class Pedido:
     '''genera el pedido contodos sus campos'''
-    def __init__(self, id_cliente, descripcion, etiquetas=' ', fecha_prev=' ',precio=' ',pagado=' '):
+    def __init__(self, id_cliente, descripcion, etiquetas=' ', fecha_prev=' ', precio=' ',pagado=' ',fecha_entrega=' ',id_estado=' '):
         self.descripcion=descripcion
         self.etiquetas=etiquetas
         self.fecha_recep=datetime.today()
         self.fecha_prev=fecha_prev
-        self.fecha_entrega=0
-        self.id_estado=0
+        self.fecha_entrega=fecha_entrega
+        self.id_estado=id_estado
         self.id_cliente=id_cliente
         self.precio=precio
         self.pagado=pagado
