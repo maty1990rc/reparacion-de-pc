@@ -3,26 +3,33 @@ from datetime import datetime, timedelta
 from contacto import Contacto
 from clientes import Clientes
 from pedido import Pedido
+from repositorio import Repositorio
 
 class Pedidos:
     ''' Almacena cada pedido de trabajo'''
 
     def __init__(self): 
+        self.repositorio=Repositorio()
         self.pedidos=[]
-        self.estados=["Recibido","Presupuestado","Reparado","Entregado","Demorado"]
-
+        self.estados=["Recibido","Presupuestado","Reparado","Entregado","Pagado"]
+        try:
+            self.pedidos=self.repositorio.get_all_pedidos()    
+        except Exception as mensaje:
+            raise
     def nuevo_pedido(self, id_cliente, descripcion, etiquetas=' ', fecha_prev=' ', fecha_entrega=' ',
                  id_estado=' ',precio=' ',pagado=' '):    
         obj=Pedido(id_cliente, descripcion, etiquetas, fecha_prev, fecha_entrega,
                  id_estado,precio,pagado)
         ret=self.pegar_estado(obj)
+        id=self.repositorio.guardar_pedido(ret)
+        ret.id_pedido=id
         self.pedidos.append(ret)
         
-        return obj
+        return ret
     def buscar_pedido(self,filtro):
         lista=[]
         for i in self.pedidos:
-            if (str(i.descripcion) == str(filtro)) or (str(i.etiquetas) == str(filtro)) or (str(i.id_pedido)==str(filtro)):
+            if ( str(filtro) in str(i.descripcion)) or (str(i.etiquetas) == str(filtro)) or (str(i.id_pedido)==str(filtro)):
                 lista.append(i)
         return lista        
         
@@ -35,6 +42,7 @@ class Pedidos:
         if pedido:
             pedido.id_estado=self.estados[3]
             pedido.fecha_entrega=datetime.today()
+            self.repositorio.actualizar_pedido(pedido)
             return pedido
         else:
             return 'Nose encontro pedido'
@@ -50,6 +58,8 @@ class Pedidos:
                 pedido.etiquetas=etiquetas
             if pagado:
                 pedido.pagado=pagado
+            self.pegar_estado(pedido)
+            self.repositorio.actualizar_pedido(pedido)
         else:
             return 'pedido no encontrado'
 
@@ -101,7 +111,14 @@ class Pedidos:
     def pegar_estado(self,pedido):
         if pedido:
             pedido.id_estado=self.estados[0]
-        if int(pedido.precio) > 0:
-            pedido.id_estado=self.estados[1]
+        if pedido.precio:   
+            if int(pedido.precio) > 0:
+                pedido.id_estado=self.estados[1]
+        if pedido.precio == pedido.pagado:
+            pedido.id_estado=self.estados[4]
         return pedido
-            
+    def eliminar_elpedido(self,id_pedido):
+        pedido=self.buscar_por_id(id_pedido)
+        if pedido:
+            self.pedidos.remove(pedido)
+            self.repositorio.eliminar_pedido_bd(pedido)
