@@ -15,7 +15,9 @@ class Pedidos:
                  id_estado=' ',precio=' ',pagado=' '):    
         obj=Pedido(id_cliente, descripcion, etiquetas, fecha_prev, fecha_entrega,
                  id_estado,precio,pagado)
-        self.pedidos.append(obj)
+        ret=self.pegar_estado(obj)
+        self.pedidos.append(ret)
+        
         return obj
     def buscar_pedido(self,filtro):
         lista=[]
@@ -31,7 +33,7 @@ class Pedidos:
     def entregar_pedido(self,id_pedido):
         pedido=self.buscar_por_id(id_pedido)
         if pedido:
-            pedido.id_estado= 'Entregado'
+            pedido.id_estado=self.estados[3]
             pedido.fecha_entrega=datetime.today()
             return pedido
         else:
@@ -52,7 +54,8 @@ class Pedidos:
             return 'pedido no encontrado'
 
     def pedidos_por_vencer(self):
-            '''crea una lista de pedidos por vencer en los proximos 5 dias.'''
+            '''recibe un número "n" como parámetro, y retorna una lista de
+                los contactos que cumplen años en los próximos "n" días.'''
             lista=[]
             pedidos=[]
             for y in self.pedidos:
@@ -94,4 +97,11 @@ class Pedidos:
                 if int(resultado.days)<0:
                     lista.append(xx)
                 pedidos.remove(xx)
-            return lista      
+            return lista
+    def pegar_estado(self,pedido):
+        if pedido:
+            pedido.id_estado=self.estados[0]
+        if int(pedido.precio) > 0:
+            pedido.id_estado=self.estados[1]
+        return pedido
+            

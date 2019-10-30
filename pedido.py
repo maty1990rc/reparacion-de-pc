@@ -3,7 +3,6 @@ from datetime import datetime
 from contacto import Contacto
 from clientes import Clientes
 
-
 ultimoid=0
 class Pedido:
     '''genera el pedido contodos sus campos'''
@@ -20,4 +19,4 @@ class Pedido:
         global ultimoid
         ultimoid=ultimoid+1
         self.id_pedido=ultimoid
-              
+       
