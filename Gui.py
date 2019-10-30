@@ -17,6 +17,7 @@ class Gui:
         '''inicializa la ventana principal del programa'''
         self.raiz_sistema=tkinter.Tk()
         self.raiz_sistema.title("Reparacion de PC")
+        self.raiz_sistema.config(bg="ivory4",bd=2)
         self.clientes=Clientes()
         self.pedidos=Pedidos()
         
@@ -24,21 +25,23 @@ class Gui:
         botonAgregar_pedido=tkinter.Button(self.raiz_sistema,text="Ingresar pedido",
                     command = self.agregar_pedido).grid(row=0, column=0)
         botonclientes=tkinter.Button(self.raiz_sistema,text="Clientes",
-                    command = self.contactos).grid(row=0, column=5)
+                    command = self.contactos,bg="grey").grid(row=0, column=5)
         botonpedidos_avencer=tkinter.Button(self.raiz_sistema,text="Pedidos por  vencer",
-                    command = self.pedidos_proximos).grid(row=0, column=3)
+                    command = self.pedidos_proximos,bg="grey").grid(row=0, column=3)
         botonpedidos_vencidos=tkinter.Button(self.raiz_sistema,text="Pedidos vencidos",
-                    command = self.vencidos).grid(row=1, column=3)
+                    command = self.vencidos,bg="grey").grid(row=1, column=3)
         
         botoncerrar_pedido=tkinter.Button(self.raiz_sistema,text="Etregar pedido",
-                    command = self.cerrar_pedido).grid(row=0, column=1)
-        tkinter.Label(self.raiz_sistema,text="Buscar pedido").grid(row=1,column=0)
+                    command = self.cerrar_pedido,bg="grey").grid(row=0, column=1)
+        botoneliminar_pedido=tkinter.Button(self.raiz_sistema,text="Eliminar",
+                    command = self.eliminar_pedido,bg="grey").grid(row=0, column=4)
+        tkinter.Label(self.raiz_sistema,text="Buscar pedido",bg="ivory4").grid(row=1,column=0)
         self.cajaBuscar_pedido = tkinter.Entry(self.raiz_sistema)
         self.cajaBuscar_pedido.grid(row=1, column=1)
         botonBuscar_pedido = tkinter.Button(self.raiz_sistema, text="Buscar",
-                    command = self.buscar_pedido).grid(row=1, column=2)
+                    command = self.buscar_pedido,bg="grey").grid(row=1, column=2)
         botonModificar_pedido = tkinter.Button(self.raiz_sistema, text="Modificar",
-                    command = self.modificar_pedido).grid(row=0, column=2)
+                    command = self.modificar_pedido,bg="grey").grid(row=0, column=2)
 
         
         self.treeview = ttk.Treeview(self.raiz_sistema, 
@@ -54,8 +57,8 @@ class Gui:
         
         self.treeview.grid(row=2, columnspan=6)
         botonSalir = tkinter.Button(self.raiz_sistema, text = "Salir",
-                    command = self.raiz_sistema.destroy)
-        botonSalir.grid(row=3, column=1)
+                    command = self.raiz_sistema.destroy,bg="grey")
+        botonSalir.grid(row=4, column=2)
 
 
 
@@ -66,7 +69,7 @@ class Gui:
         '''ventana para ingresar datos de pedido'''
         self.raiz_nuevopedido=tkinter.Toplevel()
         self.raiz_nuevopedido.title("agregar pedido")
-        self.raiz_nuevopedido.geometry("400x250+0+0")
+        self.raiz_nuevopedido.config(bg="green",bd=2)
 
         self.caja_descripcion=tkinter.Entry(self.raiz_nuevopedido)
         self.caja_descripcion.grid(row=0,column=1)
@@ -81,12 +84,13 @@ class Gui:
         self.caja_idcliente=tkinter.Entry(self.raiz_nuevopedido)
         self.caja_idcliente.grid(row=6,column=1)
 
-        tkinter.Label(self.raiz_nuevopedido,text="Descripcion").grid(row=0,column=0)
-        tkinter.Label(self.raiz_nuevopedido,text="Etiquetas").grid(row=1,column=0)
-        tkinter.Label(self.raiz_nuevopedido,text="Fecha previstas").grid(row=2,column=0)
-        tkinter.Label(self.raiz_nuevopedido,text="Precio").grid(row=3,column=0)
-        tkinter.Label(self.raiz_nuevopedido,text="Pagado").grid(row=4,column=0)
-
+        tkinter.Label(self.raiz_nuevopedido,text="Descripcion",bg="green").grid(row=0,column=0)
+        tkinter.Label(self.raiz_nuevopedido,text="Etiquetas",bg="green").grid(row=1,column=0)
+        tkinter.Label(self.raiz_nuevopedido,text="Fecha previstas",bg="green").grid(row=2,column=0)
+        tkinter.Label(self.raiz_nuevopedido,text="Precio",bg="green").grid(row=3,column=0)
+        tkinter.Label(self.raiz_nuevopedido,text="Pagado",bg="green").grid(row=4,column=0)
+        tkinter.Label(self.raiz_nuevopedido,text="ID CLiente",bg="green").grid(row=6,column=0)
+        tkinter.Label(self.raiz_nuevopedido,text="dd/mm/aaaa",bg="green").grid(row=2,column=2)
         boton_salir=tkinter.Button(self.raiz_nuevopedido,text="Salir",
                                    command= self.raiz_nuevopedido.destroy).grid(row=5,column=1)
         boton_guardar=tkinter.Button(self.raiz_nuevopedido,text="Guardar",
@@ -524,10 +528,17 @@ class Gui:
             self.treeview.delete(i)
     
         self.root_modificar_pedido.destroy()
-        
-       
-       
-            
+    def eliminar_pedido(self):
+        i = self.treeview.selection()
+        id = self.treeview.item(i)['text']
+
+        self.pedidos.eliminar_elpedido(id)
+
+        # Vaciar el treeview
+        for i in self.treeview.get_children():
+            self.treeview.delete(i)
+        messagebox.showwarning("ADMINISTRCION DE PEDIDOS","PEDIDO ELIMINADO")
+        self.buscar_pedido()
 if __name__ == "__main__":
     g = Gui()
       
